@@ -412,7 +412,7 @@ y(t_0) &= \left( r_{min} + \frac{v}{2a_{max}} \left( 1+cos^2\theta_h^* \right) \
 
 %The derivation of  (\ref{eq:horiz_backward_dyn}) is provided in the Appendix. 
 
-From Figure \ref{fig:horiz_safety_set}, we can see that $\theta_h^*$ is only defined on certain parts of $\partial S_h$: $\theta_h^*\in[0,\theta_c] \cup [\pi-\theta_c,\pi]$ for some $\theta_c \buildrel\triangle\over = \theta_h^* \bigg|_{x(t_0)=0}$ shown in (\ref{eq:theta_c}). At $\theta_h^*=\theta_c$ (or $x(t_0)=0$) and maximum $v$, we have the worst-case scenario, giving us the WCMMD to be $y(t_0) \bigg|_{\theta_h^*=\theta_c}$ in (\ref{eq:horiz_backward_dyn}).
+From Figure \ref{fig:horiz_safety_set}, we can see that $\theta_h^*$ is only defined on certain parts of $\partial S_h$: $\theta_h^*\in[0,\theta_c] \cup [\pi-\theta_c,\pi]$ for some $\theta_c \buildrel\triangle\over = \theta_h^* \bigg|_{x(t_0)=0}$ shown in (\ref{eq:theta_c}). At $\theta_h^*=\theta_c$ (or $x(t_0)=0$) and maximum $v$, we have the worst-case scenario, giving us the worst-case minimum maneuver distance (WCMMD) to be $y(t_0) \bigg|_{\theta_h^*=\theta_c}$ in (\ref{eq:horiz_backward_dyn}).
 
 \begin{equation}
 \label{eq:theta_c}
@@ -451,7 +451,7 @@ We start the simulation from the safety sets (\ref{eq:horiz_backward_dyn}). If t
 Algorithm \ref{alg:iterative_simulation} is applied to a range of $a_{max}$ and $v$ defined in Section \ref{sec:horiz_safety_controller_derivation}. The result is a look-up table WCERT($a_{max}$,$v$). The generation of WCERT values is time-consuming but performed off line. In real flights, we can just run the light-weight kinematic safety controller in real-time but react WCERT($a_{max}$,$v$) earlier. If the dynamic model in the simulation is close to the real dynamics, then we are safe.
 
 \subsection{Horizontal Control Conversion}
-To convert the horizontal kinematic control $\boldsymbol{u_h^*}$ to dynamic controls $U_2$ and $U_3$, we assume that the quadrotor is in vertical equilibrium when performing the avoidance. Then the inputs that could affect the horizontal motions are the desired roll ($\phi_d$), pitch ($\theta_d$), and yaw ($\psi_d$). It turns out that yaw is not effective, so we choose roll and pitch. The conversion is straight forward. First, decompose the acceleration into components in the world frame $\mathcal{W}$, then rotate it to the body frame $\mathcal{B}$, and finally convert it to the desired pitch ($\theta_d$) and roll ($\phi_d$). Equation (\ref{eq:horiz_u_conversion}) summarizes the process. 
+To convert the horizontal kinematic control $\boldsymbol{u_h^*}$ to dynamic controls $U_2$ and $U_3$, we assume that the quadrotor is in vertical equilibrium when performing the avoidance. The inputs that could affect the horizontal motions are the desired roll ($\phi_d$), pitch ($\theta_d$), and yaw ($\psi_d$). We choose roll and pitch since yaw is not effective. The conversion is straight forward. First, decompose the acceleration into components in the world frame $\mathcal{W}$, then rotate it to the body frame $\mathcal{B}$, and finally convert it to the desired pitch ($\theta_d$) and roll ($\phi_d$). Equation (\ref{eq:horiz_u_conversion}) summarizes the process. 
 
 \begin{equation}
 \label{eq:horiz_u_conversion}
@@ -502,7 +502,7 @@ c_r &= 0.10 \; Nm \cdot s^2 \\
 \begin{itemize}
 	\item $\boldsymbol{I}=diag(I_x,I_y,I_z)$: We approximate the rotational inertia (RI) by approximating the 3DR Solo as a solid cylinder of radius $0.1m$ and height $0.1m$. The calculation follows from \cite{beer1972statics}, and the system identification results in \cite{bouadi2011adaptive} validates our calculation.
 	
-	\item $c_t$: Instead of adopting results from \cite{bouadi2011adaptive}, which yields an unrealistically large terminal velocity, we picked a more conservative value of $0.5 Ns/m$ converted from [\citen{dragcoeff}, \citen{munson1990fundamentals}]. The number is validated from static equilibrium between maximum horizontal thrust of $\sqrt{3}mg$ and translation drag $c_t v_{max}$, where $v_{max}=50m/s$ is the terminal speed of the quadrotor \cite{quadrotor_common_speed}.
+	\item $c_t$: Instead of adopting results from \cite{bouadi2011adaptive}, which yields an unrealistically large terminal velocity, we picked a more conservative value of $0.5 Ns/m$ from [\citen{dragcoeff}, \citen{munson1990fundamentals}]. The number is validated from static equilibrium between maximum horizontal thrust of $\sqrt{3}mg$ and translation drag $c_t v_{max}$, where $v_{max}=50m/s$ is the terminal speed of the quadrotor \cite{quadrotor_common_speed}.
 	
 	\item $\Delta t_{delay}$: The communication delay is set to $1.0 s$ throughout the simulations, to approximate the worst-case behavior of ADS-B \cite{helfrick2010principles}.
 \end{itemize}
@@ -530,14 +530,14 @@ v_{12} = 70m/s \\
 
 \begin{figure}
     \centering
-    \begin{subfigure}{.48\columnwidth}
+    \begin{subfigure}{.47\columnwidth}
         \centering
         \includegraphics[width=\columnwidth]{roll_pitch_avoidance}
         \caption{without drag force}
         \label{fig:roll_pitch_avoidance_frictionless}
     \end{subfigure}
     \hfill
-    \begin{subfigure}{.48\columnwidth}
+    \begin{subfigure}{.47\columnwidth}
         \centering
         \includegraphics[width=\columnwidth]{roll_pitch_avoidance_friction}
         \caption{with drag force}
@@ -559,7 +559,7 @@ However, with drag, ERT is not a strong function of tracking delay anymore. With
 
 \subsubsection{worst-case scenarios}
 
-In this section, we discuss the simulation results of the safety controller considered in Section \ref{sec:horiz_safety_controller_derivation}. The WCMMD and WCERT are observed when the quadrotor and helicopter are heading directly to each other at maximum horizontal relative velocity at the same altitude. The effect of rotational inertia (RI), drag forces, and communication delay described in Section \ref{sec:simulation} are evaluated.
+In this section, we discuss the simulation results of the safety controller in Section \ref{sec:horiz_safety_controller_derivation}. The WCMMD and WCERT, defined in Section \ref{sec:horiz_safety_controller_derivation}, are observed when the quadrotor and helicopter are heading directly to each other at maximum horizontal relative velocity at the same altitude. The effect of rotational inertia (RI), drag forces, and communication delay described in Section \ref{sec:simulation} are evaluated.
 
 \begin{figure}
 	\centering
@@ -657,7 +657,7 @@ v_{12} = 98.3 m/s \\
 
 By employing the safety controller, the quadrotor successfully avoids the helicopter and gets to the final destination (Figure \ref{fig:trajectory}). Assume that there is no communication delay, when the WCERT is set to $0.1s$, the minimum relative distance between the two vehicles is $r_{12,min}=21.8m$, which is barely larger than the nominal threshold $r_{min}=20m$, indicating that the safety controller performs almost optimally. Note that if the vehicles are equipped with ADS-B, the WCERT should take into account the $1s$ communication delay, giving a WCERT value of $1.1s$.
 
-Figure \ref{fig:tracking} shows the time history of the horizontal command and control signals. In all subplots, the black solid lines give the actual signal trajectory. In the $X$, $Y$, and $Z$ time history plots, the red dashed lines indicate desired destination. In the $\theta$ and $\phi$ plots, the blue dashed lines show the command generated from the angle controller, and the red dashed lines give command from the position controller. At the beginning, position control is enabled, and the actual trajectory (solid black) follow the position control command. At time $t=6.7s$, the quadrotor switches to the safety (angle) control until $t=8.3s$, which gives an avoidance duration of $1.6s$. The tracking delay in roll ($\phi$) is long ($\sim 0.44s$) since the error between the desired roll and the actual roll is large at the beginning of the avoidance. During the avoidance, the quadrotor is under angle control, and the position control signal $X_d$ and $Y_d$ follow the actual position $X$ and $Y$, instead. After the safety maneuver, the quadrotor switches back to position control smoothly. After arriving at the destination ($t \ge 32 s$), the quadrotor still has nonzero roll and pitch to counteract the wind disturbance. Note that full thrust ($U_1$) is applied during the avoidance, indicating the choice of $a_{max}$ is the highest achievable acceleration. Nonetheless, the quadrotor follows the generated path closely in position control mode, indicating that the generated path works well with the sliding mode controllers, under wind disturbance and measurement noise.
+Figure \ref{fig:tracking} shows the time history of the horizontal command and control signals. In all subplots, the black solid lines give the actual signal trajectory. In the $X$, $Y$, and $Z$ time history plots, the red dashed lines indicate desired destination. In the $\theta$ and $\phi$ plots, the blue dashed lines show the command generated from the angle (safety) controller, and the red dashed lines give command from the position controller. At the beginning, position control is enabled, and the actual trajectory (solid black) follow the position control command. At time $t=6.7s$, the quadrotor switches to the safety control until $t=8.3s$, which gives an avoidance duration of $1.6s$. The tracking delay in roll ($\phi$) is long ($\sim 0.44s$) since the error between the desired roll and the actual roll is large at the beginning of the avoidance. During the safety avoidance, the quadrotor is under angle control, and the position control signal $X_d$ and $Y_d$ follow the actual position $X$ and $Y$, instead. After the safety maneuver, the quadrotor switches back to position control smoothly. After arriving at the destination ($t \ge 32 s$), the quadrotor still has nonzero roll and pitch to counteract the wind disturbance. Note that full thrust ($U_1$) is applied during the avoidance, indicating the choice of $a_{max}$ is the highest achievable acceleration. Nonetheless, the quadrotor goes to the destination quickly in $27.5 s$, indicating that effectiveness of the sliding mode controllers, even in presence of wind disturbance and measurement noise.
 
 The efficiency of the safety controller could also be evaluated by the total flight time. In this scenario, if the quadrotor were flying straight without the helicopter, the total flight time would be $27.5 s$, and that with avoidance is $31.8 s$, which gives an overall navigation delay of $4.3 s$. After deducting the $1.6 s$ avoidance maneuver, the navigation time is increased by $2.7 s$. If the destination is $10$ miles away, the total flight time would be around $10$ minutes. The navigation delay ($4.3 s$) gives a $0.7\%$ increase in the total flight time. The optimality ensures that the extra time spent on avoidance is not significant compared to the whole trip.
 
